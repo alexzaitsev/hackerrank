@@ -43,6 +43,7 @@ public class Solution {
         }
         
         System.out.println(count);
+        in.close();
     }
 }
 
