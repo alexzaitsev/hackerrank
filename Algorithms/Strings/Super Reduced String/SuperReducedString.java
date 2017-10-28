@@ -34,5 +34,6 @@ public class Solution {
         String s = in.next();
         String result = reduce(s);
         System.out.println(result.isEmpty() ? "Empty String" : result);
+        in.close();
     }
 }
