@@ -2,16 +2,24 @@
 
 class MyQueue(object):
     def __init__(self):
-        self.stack = []
+        self.stackNewest = []
+        self.stackOldest = []
     
     def peek(self):
-        return self.stack[0]
+        self.transfer()
+        return self.stackOldest[-1]
         
     def pop(self):
-        self.stack = self.stack[1:]
+        self.transfer()
+        return self.stackOldest.pop()
         
     def put(self, value):
-        self.stack.append(value)
+        self.stackNewest.append(value)
+        
+    def transfer(self):
+        if len(self.stackOldest) == 0:
+            while len(self.stackNewest) != 0:
+                self.stackOldest.append(self.stackNewest.pop())
 
 queue = MyQueue()
 t = int(input())
