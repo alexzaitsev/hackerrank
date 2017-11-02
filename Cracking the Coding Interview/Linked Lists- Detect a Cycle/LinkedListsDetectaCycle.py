@@ -26,4 +26,4 @@ def has_cycle(head):
         traversed[counter] += 1
         counter += 1
         nextOne = nextOne.next
-        print(traversed)
+
