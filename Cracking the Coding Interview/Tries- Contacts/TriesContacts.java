@@ -1,3 +1,5 @@
+// https://www.hackerrank.com/challenges/ctci-contacts/problem
+
 import java.io.*;
 import java.util.*;
 import java.text.*;
@@ -6,95 +8,65 @@ import java.util.regex.*;
 
 public class Solution {
 
-    static class Node {   
+    public static class Node {   
         
-        char value;
-        List<Node> children = new ArrayList<>();
+        private static int NUMB_OF_CHARS = 26;
+        private Node[] children = new Node[NUMB_OF_CHARS];
+        private int size = 0;
         
-        Node() {}
-        
-        Node(char value) {
-            this.value = value;
+        private static int getCharIndex(char c) {
+            return c - 'a';
         }
         
-        Node getChild(char value) {
-            for (Node node: children) {
-                if (node.value == value) {
-                    return node;
-                }
-            }
-            return null;
+        public Node getNode(char c) {
+            return children[getCharIndex(c)];
         }
         
-        int countAllChildren()  {
-            return countAllChildren(0);
+        public void setNode(char c, Node node) {
+            children[getCharIndex(c)] = node;
         }
         
-        int countAllChildren(int count) {
-            for (Node node: children) {
-                count += node.countAllChildren(0);
-            }
-            return value == '*' ? ++count : count;
-        }
-    }
-    
-    static class Tree {
-        
-        Node root = new Node();
-        
-        void add(String word) {
-            Node current = root;
-            for (char c: word.toCharArray()) {
-                Node next = current.getChild(c);
-                if (next == null) {
-                    next = new Node(c);
-                    current.children.add(next);
-                } 
-                current = next;
-                //System.out.println("------ " + c + " ---------");
-                //print(root);
-            }
-            if (current.getChild('*') == null) {
-                current.children.add(new Node('*'));
-            }
+        public void add(String s) {
+            add(s, 0);
         }
         
-        int count(String word) {
-            char[] chars = word.toCharArray();
-            Node current = root;
-            int i = 0;
-            while(current != null && i < chars.length) {
-                current = current.getChild(chars[i++]);
+        private void add(String s, int index) {
+            size++;
+            if (index == s.length()) return;
+            char current = s.charAt(index);
+            Node child = getNode(current);
+            if (child == null) {
+                child = new Node();
+                setNode(current, child);
             }
-            //System.out.println("current: " + current + " ,i = " + i + " ,size = " + chars.length);
-            if (current != null && i == chars.length) {
-                return current.countAllChildren();
-            }
-            return 0;
+            child.add(s, index + 1);
         }
         
-        void print(Node n) {
-            for (Node node : n.children) {
-                System.out.print(node.value + " ");
+        public int count(String s) {
+            return count(s, 0);
+        }
+        
+        private int count(String s, int index) {
+            if (index == s.length()) return size;
+            Node child = getNode(s.charAt(index));
+            if (child == null) {
+                return 0;
             }
-            System.out.println();
-            for (Node node : n.children) {
-                print(node);
-            }
+            return child.count(s, index + 1);
         }
     }
     
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         int n = in.nextInt();
-        Tree tree = new Tree();
+        Node root = new Node();
         for(int a0 = 0; a0 < n; a0++){
             String op = in.next();
             String contact = in.next();
             if (op.equals("add")) {
-                tree.add(contact);
+                root.add(contact);
             } else {
-                System.out.println(tree.count(contact));
+                System.out.println(root.count(contact));
             }
         }
     }
